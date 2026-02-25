@@ -130,6 +130,12 @@ const SellerDetailsPage = () => {
                             <p style={{ fontWeight: 500 }}>{new Date(application.submittedAt).toLocaleString()}</p>
                         </div>
                         <div style={{ gridColumn: '1 / -1' }}>
+                            <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.25rem' }}>Email Address</p>
+                            <div style={{ background: 'var(--bg-subtle)', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', display: 'inline-block' }}>
+                                {application.email || 'No email provided'}
+                            </div>
+                        </div>
+                        <div style={{ gridColumn: '1 / -1' }}>
                             <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.25rem' }}>GST Number</p>
                             <div style={{ background: 'var(--bg-subtle)', padding: '0.75rem', borderRadius: 'var(--radius-md)', fontFamily: 'monospace', border: '1px solid var(--border-color)', display: 'inline-block' }}>
                                 {application.gstNumber}

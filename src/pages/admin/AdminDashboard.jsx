@@ -159,6 +159,7 @@ const AdminDashboard = () => {
                                     >
                                         <td>
                                             <div style={{ fontWeight: 500 }}>{app.storeName}</div>
+                                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{app.email || 'No email provided'}</div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: {app.id}</div>
                                         </td>
                                         <td><span style={{ fontFamily: 'monospace' }}>{app.gstNumber}</span></td>
