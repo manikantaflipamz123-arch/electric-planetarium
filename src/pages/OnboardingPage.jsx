@@ -15,7 +15,8 @@ const OnboardingPage = () => {
         accountNumber: '',
         ifscCode: '',
         bankName: '',
-        password: ''
+        password: '',
+        email: ''
     });
 
     const handleChange = (e) => {
@@ -39,8 +40,7 @@ const OnboardingPage = () => {
                     ifscCode: formData.ifscCode,
                     bankName: formData.bankName,
                     password: formData.password,
-                    // Use a unique email since we don't ask for one in the mock form yet
-                    email: `${formData.storeName.replace(/\s+/g, '').toLowerCase()}_${Date.now()}@vendor.com`
+                    email: formData.email
                 })
             });
 
@@ -58,7 +58,8 @@ const OnboardingPage = () => {
                 bankAccount: formData.accountNumber,
                 ifscCode: formData.ifscCode,
                 bankName: formData.bankName,
-                password: formData.password
+                password: formData.password,
+                email: formData.email
             });
 
             setIsSubmitting(false);
@@ -114,6 +115,19 @@ const OnboardingPage = () => {
                                 placeholder="e.g. Acme Electronics"
                                 onChange={handleChange}
                                 value={formData.storeName}
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label className="input-label">Email Address *</label>
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                className="input-field"
+                                placeholder="vendor@example.com"
+                                onChange={handleChange}
+                                value={formData.email}
                             />
                         </div>
 
