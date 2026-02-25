@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Supabase / Neon
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------
+// 1. Core Users (Handles Auth for Admin & Vendor)
+// -----------------------------------------
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  role      Role     @default(VENDOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendorProfile VendorProfile?
+}
+
+enum Role {
+  ADMIN
+  VENDOR
+}
+
+// -----------------------------------------
+// 2. Vendor Profiles (Store details & KYC)
+// -----------------------------------------
+model VendorProfile {
+  id                     String   @id @default(uuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id])
+  
+  storeName              String
+  gstNumber              String
+  bankName               String
+  bankAccount            String
+  ifscCode               String
+  
+  // Address for Shipping Labels
+  address                String?
+  city                   String?
+  state                  String?
+  zip                    String?
+  phone                  String?
+
+  status                 VendorStatus @default(PENDING)
+  rejectionReason        String?
+  platformCommissionRate Float        @default(15.0)
+
+  products               Product[]
+  orders                 Order[]      // Orders this vendor needs to fulfill
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// -----------------------------------------
+// 3. Inventory & Products
+// -----------------------------------------
+model Product {
+  id             String        @id @default(uuid())
+  vendorId       String
+  vendor         VendorProfile @relation(fields: [vendorId], references: [id])
+  
+  name           String
+  description    String?
+  price          Float
+  stockQuantity  Int           @default(0) // Crucial for preventing overselling
+  isGstInclusive Boolean       @default(false)
+  taxRate        Float         @default(18.0)
+  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  orderItems     OrderItem[]
+}
+
+// -----------------------------------------
+// 4. Financial Orders & Shipping
+// -----------------------------------------
+model Order {
+  id              String        @id @default(uuid())
+  vendorId        String
+  vendor          VendorProfile @relation(fields: [vendorId], references: [id])
+  
+  // Customer Checkout Info
+  customerId      String?
+  customerName    String
+  customerEmail   String?
+  address         String
+  phone           String
+  zip             String
+
+  totalAmount     Float         // Final calculated amount
+  
+  // Shipping State
+  status          OrderStatus   @default(PLACED)
+  trackingNumber  String?
+  courierPartner  String?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  items           OrderItem[]
+}
+
+enum OrderStatus {
+  PLACED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id          String  @id @default(uuid())
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id])
+  
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  
+  priceAtSale Float   // Historical snapshot of price when bought
+  quantity    Int
+  total       Float
+}
