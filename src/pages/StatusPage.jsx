@@ -1,29 +1,38 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useVendorStore } from '../store/vendorStore';
 import { Search, CheckCircle, XCircle, Clock, ArrowRight } from 'lucide-react';
 
 const StatusPage = () => {
-    const applications = useVendorStore(state => state.applications);
-
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResult, setSearchResult] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
-        const query = searchQuery.trim().toLowerCase();
+        const query = searchQuery.trim();
 
         if (!query) return;
 
-        // Search by exact Application ID or GST Number
-        const result = applications.find(app =>
-            app.id.toLowerCase() === query ||
-            app.gstNumber.toLowerCase() === query
-        );
+        setIsLoading(true);
+        setSearchResult(null);
+        setHasSearched(false);
 
-        setSearchResult(result || null);
-        setHasSearched(true);
+        try {
+            const response = await fetch(`/api/vendor/status?query=${encodeURIComponent(query)}`);
+            if (response.ok) {
+                const data = await response.json();
+                setSearchResult(data.application);
+            } else {
+                setSearchResult(null);
+            }
+        } catch (error) {
+            console.error("Status fetch error:", error);
+            setSearchResult(null);
+        } finally {
+            setIsLoading(false);
+            setHasSearched(true);
+        }
     };
 
     return (
@@ -52,8 +61,8 @@ const StatusPage = () => {
                             <Search size={18} className="text-muted" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                         </div>
                     </div>
-                    <button type="submit" className="btn btn-primary" style={{ padding: '0 2rem' }}>
-                        Search
+                    <button type="submit" className="btn btn-primary" style={{ padding: '0 2rem' }} disabled={isLoading}>
+                        {isLoading ? 'Searching...' : 'Search'}
                     </button>
                 </form>
             </div>
@@ -70,7 +79,7 @@ const StatusPage = () => {
                         </div>
                     ) : (
                         <div>
-                            {searchResult.status === 'pending' && (
+                            {searchResult.status === 'PENDING' && (
                                 <>
                                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'var(--color-warning)20', color: 'var(--color-warning)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
                                         <Clock size={32} />
@@ -80,7 +89,7 @@ const StatusPage = () => {
                                 </>
                             )}
 
-                            {searchResult.status === 'approved' && (
+                            {searchResult.status === 'APPROVED' && (
                                 <>
                                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'var(--color-success)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
                                         <CheckCircle size={32} />
@@ -93,7 +102,7 @@ const StatusPage = () => {
                                 </>
                             )}
 
-                            {searchResult.status === 'rejected' && (
+                            {searchResult.status === 'REJECTED' && (
                                 <>
                                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'var(--color-danger)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
                                         <XCircle size={32} />
