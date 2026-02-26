@@ -16,7 +16,7 @@ const AnalyticsPage = () => {
         }
     }, [currentUser, navigate]);
 
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === currentUser?.id);
+    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id));
     const products = useProductStore(state => state.products).filter(p => p.vendorId === currentUser?.id);
     const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 

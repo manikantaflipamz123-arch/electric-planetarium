@@ -26,7 +26,7 @@ const ShippingPage = () => {
         }
     }, [currentUser, navigate]);
 
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === currentUser?.id && o.status === 'Placed');
+    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id) && o.status === 'Placed');
     const updateOrderStatus = useOrderStore(state => state.updateOrderStatus);
 
     const [searchTerm, setSearchTerm] = useState('');

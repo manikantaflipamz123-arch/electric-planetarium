@@ -14,7 +14,7 @@ const OrdersPage = () => {
         }
     }, [currentUser, navigate]);
 
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === currentUser?.id);
+    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id));
     const updateOrderStatus = useOrderStore(state => state.updateOrderStatus);
 
     const [filter, setFilter] = useState('All');

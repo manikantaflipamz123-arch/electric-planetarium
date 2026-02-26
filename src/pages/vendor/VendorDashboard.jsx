@@ -25,7 +25,7 @@ const VendorDashboard = () => {
     }, [currentUser, fetchProducts]);
 
     const products = useProductStore(state => state.products);
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === currentUser?.id);
+    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id));
     const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 
     const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || order.total || 0), 0);
