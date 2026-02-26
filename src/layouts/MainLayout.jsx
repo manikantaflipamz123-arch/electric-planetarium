@@ -23,6 +23,7 @@ const MainLayout = () => {
                     </Link>
 
                     <nav className="flex items-center gap-6">
+                        <Link to="/status" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500 }}>Check Status</Link>
                         <Link to="/onboarding" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500 }}>Start Selling</Link>
                         <Link to="/login" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500 }}>Vendor Login</Link>
                         <Link to="/admin/login" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500 }}>Admin Login</Link>

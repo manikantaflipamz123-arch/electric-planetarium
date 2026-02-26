@@ -67,11 +67,16 @@ const OnboardingPage = () => {
                     </div>
                     <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Application Submitted!</h2>
                     <p className="text-muted" style={{ marginBottom: '2rem' }}>
-                        Thank you for applying to ShopLiveDeals. Our team will review your application and get back to you shortly.
+                        Thank you for applying to ShopLiveDeals. Our team will review your application and get back to you shortly. You can check your application status anytime using your GST number.
                     </p>
-                    <button onClick={() => navigate('/')} className="btn btn-primary" style={{ width: '100%' }}>
-                        Return to Home
-                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <button onClick={() => navigate('/status')} className="btn btn-primary" style={{ width: '100%' }}>
+                            Check Application Status
+                        </button>
+                        <button onClick={() => navigate('/')} className="btn btn-outline" style={{ width: '100%' }}>
+                            Return to Home
+                        </button>
+                    </div>
                 </div>
             </div>
         );
