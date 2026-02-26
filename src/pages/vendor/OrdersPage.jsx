@@ -8,13 +8,17 @@ const OrdersPage = () => {
     const navigate = useNavigate();
     const currentUser = useAppStore(state => state.currentUser);
 
+    const fetchOrders = useOrderStore(state => state.fetchOrders);
+
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'vendor') {
             navigate('/login');
+        } else {
+            fetchOrders();
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, fetchOrders]);
 
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id));
+    const orders = useOrderStore(state => state.orders);
     const updateOrderStatus = useOrderStore(state => state.updateOrderStatus);
 
     const [filter, setFilter] = useState('All');

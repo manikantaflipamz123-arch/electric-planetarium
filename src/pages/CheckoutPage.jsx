@@ -84,7 +84,7 @@ const CheckoutPage = () => {
         }
 
         // Simulate payment gateway delay
-        setTimeout(() => {
+        setTimeout(async () => {
             // Re-check inventory at point of final commitment to prevent race conditions
             let hasError = false;
             for (const cartItem of cart) {
@@ -183,16 +183,22 @@ const CheckoutPage = () => {
 
             // Create orders
             const fullAddress = `${formData.address}, ${formData.city}`;
-            const newOrders = placeOrder({
-                id: currentUser?.id || 'guest',
-                name: formData.name,
-                address: fullAddress,
-                phone: formData.phone,
-                zip: formData.zip
-            });
+            try {
+                const newOrders = await placeOrder({
+                    id: currentUser?.id || 'guest',
+                    name: formData.name,
+                    email: formData.email,
+                    address: fullAddress,
+                    phone: formData.phone,
+                    zip: formData.zip
+                });
 
-            setSuccessData(newOrders);
-            setIsProcessing(false);
+                setSuccessData(newOrders);
+            } catch (err) {
+                setCheckoutError(err.message || 'Failed to process transaction. Please try again.');
+            } finally {
+                setIsProcessing(false);
+            }
         }, 2000);
     };
 

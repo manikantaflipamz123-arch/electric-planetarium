@@ -10,13 +10,19 @@ const AnalyticsPage = () => {
     const navigate = useNavigate();
     const currentUser = useAppStore(state => state.currentUser);
 
+    const fetchProducts = useProductStore(state => state.fetchProducts);
+    const fetchOrders = useOrderStore(state => state.fetchOrders);
+
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'vendor') {
             navigate('/login');
+        } else {
+            fetchProducts(currentUser.vendorProfileId || currentUser.id);
+            fetchOrders();
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, fetchProducts, fetchOrders]);
 
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id));
+    const orders = useOrderStore(state => state.orders);
     const products = useProductStore(state => state.products).filter(p => p.vendorId === currentUser?.id);
     const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 

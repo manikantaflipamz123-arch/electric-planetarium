@@ -17,15 +17,17 @@ const VendorDashboard = () => {
     }, [currentUser, navigate]);
 
     const fetchProducts = useProductStore(state => state.fetchProducts);
+    const fetchOrders = useOrderStore(state => state.fetchOrders);
 
     useEffect(() => {
         if (currentUser && currentUser.role === 'vendor') {
             fetchProducts(currentUser.vendorProfileId || currentUser.id);
+            fetchOrders();
         }
-    }, [currentUser, fetchProducts]);
+    }, [currentUser, fetchProducts, fetchOrders]);
 
     const products = useProductStore(state => state.products);
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id));
+    const orders = useOrderStore(state => state.orders);
     const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 
     const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || order.total || 0), 0);

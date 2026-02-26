@@ -6,29 +6,26 @@ export const useOrderStore = create(
     persist(
         (set, get) => ({
             cart: [],
-            orders: [
-                {
-                    id: '10001001',
-                    vendorId: 'v1',
-                    customerId: 'c1',
-                    customerName: 'Demo Customer',
-                    address: '123 Test St, Tech City, IN',
-                    items: [
-                        {
-                            productId: 'prod_demo',
-                            productName: 'Premium Wireless Headphones',
-                            price: 199.99,
-                            quantity: 1,
-                            total: 199.99
-                        }
-                    ],
-                    totalAmount: 199.99,
-                    status: 'Placed', // Placed, Shipped, Delivered
-                    trackingNumber: null,
-                    courierPartner: null,
-                    createdAt: new Date().toISOString()
+            orders: [],
+            isLoading: false,
+            error: null,
+
+            // Fetch orders from the backend for the logged-in vendor
+            fetchOrders: async () => {
+                set({ isLoading: true, error: null });
+                try {
+                    const response = await fetch('/api/orders');
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        set({ orders: data.orders || [], isLoading: false });
+                    } else {
+                        set({ error: data.message || 'Failed to fetch orders', isLoading: false });
+                    }
+                } catch (error) {
+                    set({ error: error.message, isLoading: false });
                 }
-            ],
+            },
 
             // Cart Actions
             addToCart: (product, addedQuantity = 1) => {
@@ -70,69 +67,77 @@ export const useOrderStore = create(
             clearCart: () => set({ cart: [] }),
 
             // Order Actions
-            placeOrder: (customerDetails) => {
-                const { cart, orders } = get();
+            placeOrder: async (customerDetails) => {
+                const { cart } = get();
 
-                // Group cart items by vendorId so one checkout creates exactly one order per vendor
-                const groupedByVendor = cart.reduce((acc, item) => {
-                    const vId = item.product.vendorId;
-                    if (!acc[vId]) acc[vId] = [];
-                    acc[vId].push(item);
-                    return acc;
-                }, {});
+                try {
+                    const response = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            customerDetails,
+                            cartItems: cart
+                        })
+                    });
 
-                const newOrders = Object.keys(groupedByVendor).map(vendorId => {
-                    const vendorItems = groupedByVendor[vendorId];
-                    const totalAmount = vendorItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+                    const data = await response.json();
 
-                    return {
-                        id: `${Math.floor(10000000 + Math.random() * 90000000)}`,
-                        vendorId: vendorId,
-                        customerId: customerDetails.id || 'guest',
-                        customerName: customerDetails.name,
-                        address: customerDetails.address,
-                        phone: customerDetails.phone,
-                        zip: customerDetails.zip,
-                        items: vendorItems.map(item => ({
-                            productId: item.product.id,
-                            productName: item.product.name,
-                            price: item.product.price,
-                            quantity: item.quantity,
-                            total: item.product.price * item.quantity
-                        })),
-                        totalAmount: totalAmount,
-                        status: 'Placed',
-                        trackingNumber: null,
-                        courierPartner: null,
-                        createdAt: new Date().toISOString()
-                    };
-                });
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to place order');
+                    }
 
-                set({
-                    orders: [...orders, ...newOrders],
-                    cart: [] // Clear cart after placing order
-                });
+                    // Order was placed successfully to DB
+                    // Because this is usually called by the customer, we clear their cart
+                    set({
+                        cart: []
+                    });
 
-                return newOrders;
+                    // Return the generated orders list for the Checkout Success screen
+                    return data.orders;
+
+                } catch (error) {
+                    console.error('Failed to place order:', error);
+                    throw error;
+                }
             },
 
-            updateOrderStatus: (orderId, status, trackingData = {}) => {
-                set({
-                    orders: get().orders.map(order =>
-                        order.id === orderId
-                            ? {
-                                ...order,
-                                status,
-                                trackingNumber: trackingData.trackingNumber || order.trackingNumber,
-                                courierPartner: trackingData.courierPartner || order.courierPartner
-                            }
-                            : order
-                    )
-                });
+            updateOrderStatus: async (orderId, status, trackingData = {}) => {
+                try {
+                    const response = await fetch(`/api/orders?id=${orderId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            status,
+                            trackingNumber: trackingData.trackingNumber || undefined,
+                            courierPartner: trackingData.courierPartner || undefined
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to update order status');
+                    }
+
+                    // Locally update the active orders array for instant UI feedback
+                    set({
+                        orders: get().orders.map(order =>
+                            order.id === orderId
+                                ? { ...order, ...data.order }
+                                : order
+                        )
+                    });
+
+                } catch (error) {
+                    console.error('Failed to update order status:', error);
+                    alert('Error updating order status. Please try again.');
+                }
             }
         }),
         {
             name: 'shoplivedeals-order-storage',
+            // Only persist the cart, not the orders, as orders should be fetched fresh from DB
+            partialize: (state) => ({ cart: state.cart }),
         }
     )
 );

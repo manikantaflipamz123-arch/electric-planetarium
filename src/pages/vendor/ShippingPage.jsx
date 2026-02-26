@@ -11,10 +11,13 @@ const ShippingPage = () => {
 
     const [logoBase64, setLogoBase64] = useState('');
 
+    const fetchOrders = useOrderStore(state => state.fetchOrders);
+
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'vendor') {
             navigate('/login');
         } else {
+            fetchOrders();
             // Load and convert logo to base64 for PDF embedding
             fetch(logo)
                 .then(res => res.blob())
@@ -24,9 +27,9 @@ const ShippingPage = () => {
                     reader.readAsDataURL(blob);
                 });
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, fetchOrders]);
 
-    const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === (currentUser?.vendorProfileId || currentUser?.id) && o.status === 'Placed');
+    const orders = useOrderStore(state => state.orders).filter(o => o.status === 'PLACED');
     const updateOrderStatus = useOrderStore(state => state.updateOrderStatus);
 
     const [searchTerm, setSearchTerm] = useState('');
