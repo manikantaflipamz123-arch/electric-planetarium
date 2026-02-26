@@ -14,7 +14,7 @@ export const useVendorStore = create(
 
             fetchAdminApplications: async () => {
                 try {
-                    const res = await fetch('/api/admin/applications');
+                    const res = await fetch('/api/admin?action=applications');
                     if (res.ok) {
                         const data = await res.json();
                         set({
@@ -29,7 +29,7 @@ export const useVendorStore = create(
 
             approveApplication: async (id) => {
                 try {
-                    const res = await fetch('/api/admin/approve', {
+                    const res = await fetch('/api/admin?action=approve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ vendorId: id })
@@ -47,7 +47,7 @@ export const useVendorStore = create(
 
             rejectApplication: async (id, reason = '') => {
                 try {
-                    const res = await fetch('/api/admin/reject', {
+                    const res = await fetch('/api/admin?action=reject', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ vendorId: id, reason })

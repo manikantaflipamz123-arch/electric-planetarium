@@ -19,7 +19,7 @@ const StatusPage = () => {
         setHasSearched(false);
 
         try {
-            const response = await fetch(`/api/vendor/status?query=${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/vendor?action=status&query=${encodeURIComponent(query)}`);
             if (response.ok) {
                 const data = await response.json();
                 setSearchResult(data.application);

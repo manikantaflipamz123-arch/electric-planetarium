@@ -39,7 +39,7 @@ function App() {
     useEffect(() => {
         const verifySession = async () => {
             try {
-                const res = await fetch('/api/auth/me');
+                const res = await fetch('/api/auth?action=me');
                 if (res.ok) {
                     const data = await res.json();
                     if (data.user.role === 'VENDOR') {
