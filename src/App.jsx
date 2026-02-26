@@ -48,7 +48,8 @@ function App() {
                             email: data.user.email,
                             role: 'vendor',
                             storeName: data.vendorProfile?.storeName || 'Vendor',
-                            platformCommissionRate: data.vendorProfile?.platformCommissionRate || 15.0
+                            platformCommissionRate: data.vendorProfile?.platformCommissionRate || 15.0,
+                            vendorProfileId: data.vendorProfile?.id
                         });
                     }
                 } else {

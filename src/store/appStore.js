@@ -19,7 +19,7 @@ export const useAppStore = create(
             loginAsAdmin: () => set({ currentUser: MOCK_USERS.admin }),
             loginAsVendor: (customVendor = null) => {
                 if (customVendor) {
-                    set({ currentUser: { id: customVendor.id, role: 'vendor', name: customVendor.storeName || customVendor.name, email: customVendor.email, phone: customVendor.phone, address: customVendor.address, city: customVendor.city, zip: customVendor.zip, storeName: customVendor.storeName } });
+                    set({ currentUser: { id: customVendor.id, role: 'vendor', name: customVendor.storeName || customVendor.name, email: customVendor.email, phone: customVendor.phone, address: customVendor.address, city: customVendor.city, zip: customVendor.zip, storeName: customVendor.storeName, vendorProfileId: customVendor.vendorProfileId } });
                 } else {
                     set({ currentUser: MOCK_USERS.vendor });
                 }

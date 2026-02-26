@@ -51,7 +51,8 @@ const VendorLoginPage = () => {
                 email: data.user.email,
                 role: 'vendor', // Hardcode role for vendor dashboard routing
                 storeName: data.vendorProfile ? data.vendorProfile.storeName : 'Vendor',
-                platformCommissionRate: data.vendorProfile ? data.vendorProfile.platformCommissionRate : 15.0
+                platformCommissionRate: data.vendorProfile ? data.vendorProfile.platformCommissionRate : 15.0,
+                vendorProfileId: data.vendorProfile ? data.vendorProfile.id : null
             });
 
             navigate('/vendor/dashboard');
