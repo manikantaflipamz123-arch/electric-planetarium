@@ -96,7 +96,7 @@ const StatusPage = () => {
                                     </div>
                                     <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Application Approved!</h3>
                                     <p className="text-muted" style={{ marginBottom: '2rem' }}>Congratulations! Your store setup is complete. You can now log in to your Vendor Dashboard.</p>
-                                    <Link to="/" className="btn btn-primary">
+                                    <Link to="/login" className="btn btn-primary">
                                         Go to Login <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
                                     </Link>
                                 </>
