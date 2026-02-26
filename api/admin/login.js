@@ -13,7 +13,7 @@ export default async function handler(req, res) {
             return res.status(401).json({ message: 'Invalid administrator password.' });
         }
 
-        const jwtSecret = process.env.JWT_SECRET || 'fallback_development_secret_key_12345';
+        const jwtSecret = process.env.JWT_SECRET || 'super-secret-development-key-change-in-prod';
         const isProduction = process.env.NODE_ENV === 'production';
 
         const token = jwt.sign(

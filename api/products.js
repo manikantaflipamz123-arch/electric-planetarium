@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         if (!tokenMatch) return res.status(401).json({ message: 'No auth_token found in cookies' });
 
         const token = tokenMatch[1];
-        const jwtSecret = process.env.JWT_SECRET || 'fallback_development_secret_key_12345';
+        const jwtSecret = process.env.JWT_SECRET || 'super-secret-development-key-change-in-prod';
         const decoded = jwt.verify(token, jwtSecret);
 
         if (decoded.role !== 'VENDOR') {
