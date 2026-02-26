@@ -23,10 +23,10 @@ const AnalyticsPage = () => {
     }, [currentUser, navigate, fetchProducts, fetchOrders]);
 
     const orders = useOrderStore(state => state.orders);
-    const products = useProductStore(state => state.products).filter(p => p.vendorId === currentUser?.id);
+    const products = useProductStore(state => state.products);
     const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 
-    const [timeframe, setTimeframe] = useState('Today'); // Today, Week, Month, Year
+    const [timeframe, setTimeframe] = useState('All Time'); // All Time, Today, Week, Month, Year
 
     // Filter orders based on timeframe
     const now = new Date();
@@ -159,7 +159,7 @@ const AnalyticsPage = () => {
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-surface)', padding: '0.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', width: 'fit-content', marginBottom: '2rem' }}>
-                {['Today', 'Week', 'Month', 'Year'].map(period => (
+                {['All Time', 'Today', 'Week', 'Month', 'Year'].map(period => (
                     <button
                         key={period}
                         onClick={() => setTimeframe(period)}
