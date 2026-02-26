@@ -123,9 +123,9 @@ const VendorDashboard = () => {
                                     <td>{order.customerName}</td>
                                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                     <td>
-                                        {order.status === 'Placed' && <span className="badge badge-warning">Placed</span>}
-                                        {order.status === 'Shipped' && <span className="badge badge-primary">Shipped</span>}
-                                        {order.status === 'Delivered' && <span className="badge badge-success">Delivered</span>}
+                                        {order.status === 'PLACED' && <span className="badge badge-warning">Placed</span>}
+                                        {order.status === 'SHIPPED' && <span className="badge badge-primary">Shipped</span>}
+                                        {order.status === 'DELIVERED' && <span className="badge badge-success">Delivered</span>}
                                     </td>
                                     <td style={{ fontWeight: 500 }}>₹{(order.totalAmount || order.total || 0).toFixed(2)}</td>
                                 </tr>

@@ -104,9 +104,9 @@ const OrdersPage = () => {
                                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{order.address}</div>
                                     </td>
                                     <td>
-                                        {order.status === 'Placed' && <span className="badge badge-warning">Placed</span>}
-                                        {order.status === 'Shipped' && <span className="badge badge-primary">Shipped</span>}
-                                        {order.status === 'Delivered' && <span className="badge badge-success">Delivered</span>}
+                                        {order.status === 'PLACED' && <span className="badge badge-warning">Placed</span>}
+                                        {order.status === 'SHIPPED' && <span className="badge badge-primary">Shipped</span>}
+                                        {order.status === 'DELIVERED' && <span className="badge badge-success">Delivered</span>}
                                         {order.trackingNumber && (
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
                                                 {order.courierPartner ? (
@@ -118,7 +118,7 @@ const OrdersPage = () => {
                                         )}
                                     </td>
                                     <td>
-                                        {order.status === 'Placed' && (
+                                        {order.status === 'PLACED' && (
                                             <button
                                                 onClick={() => navigate('/vendor/shipping')}
                                                 className="btn btn-primary"
@@ -127,7 +127,7 @@ const OrdersPage = () => {
                                                 <Truck size={14} /> Go to Shipping
                                             </button>
                                         )}
-                                        {order.status === 'Shipped' && (
+                                        {order.status === 'SHIPPED' && (
                                             <button
                                                 onClick={() => updateOrderStatus(order.id, 'Delivered', order.trackingNumber)}
                                                 className="btn btn-outline"
