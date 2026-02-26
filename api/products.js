@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { query } from './utils/db.js';
+import { query } from './_utils/db.js';
 
 export default async function handler(req, res) {
     const { method } = req;
