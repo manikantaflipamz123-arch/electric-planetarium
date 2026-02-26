@@ -12,6 +12,13 @@ const CartPage = () => {
     const updateQuantity = useOrderStore(state => state.updateCartQuantity);
     const removeFromCart = useOrderStore(state => state.removeFromCart);
     const products = useProductStore(state => state.products);
+    const fetchProducts = useProductStore(state => state.fetchProducts);
+    const isLoading = useProductStore(state => state.isLoading);
+
+    // Fetch fresh global products so the QR code can find its matching target by name
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
 
     const cartTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
@@ -49,6 +56,9 @@ const CartPage = () => {
 
     // Handle real QR Scan quick-add via query params
     useEffect(() => {
+        // Wait until products have loaded from DB before attempting to match QR payload
+        if (isLoading || products.length === 0) return;
+
         const params = new URLSearchParams(location.search);
         const quickadd = params.get('quickadd');
 
@@ -85,7 +95,7 @@ const CartPage = () => {
                 console.error("Invalid QR target data", e);
             }
         }
-    }, [location.search, products, addToCart, navigate]);
+    }, [location.search, products, addToCart, navigate, isLoading]);
 
     const handleUpdateQuantity = (productId, newQuantity, maxAvailable) => {
         if (newQuantity > maxAvailable) {
@@ -127,7 +137,7 @@ const CartPage = () => {
                             )}
 
                             {cart.map((item) => {
-                                const liveProduct = products.find(p => p.id === item.product.id);
+                                const liveProduct = products.find(p => p.id === item.product.id) || item.product;
                                 const maxAvailable = liveProduct ? Number(liveProduct.quantity) : 0;
                                 const cartQty = Number(item.quantity) || 0;
                                 const isOversold = cartQty > maxAvailable;

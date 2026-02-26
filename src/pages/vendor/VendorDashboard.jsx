@@ -16,7 +16,15 @@ const VendorDashboard = () => {
         }
     }, [currentUser, navigate]);
 
-    const products = useProductStore(state => state.products).filter(p => p.vendorId === currentUser?.id);
+    const fetchProducts = useProductStore(state => state.fetchProducts);
+
+    useEffect(() => {
+        if (currentUser && currentUser.role === 'vendor') {
+            fetchProducts(currentUser.vendorProfileId || currentUser.id);
+        }
+    }, [currentUser, fetchProducts]);
+
+    const products = useProductStore(state => state.products);
     const orders = useOrderStore(state => state.orders).filter(o => o.vendorId === currentUser?.id);
     const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 

@@ -14,7 +14,13 @@ const CheckoutPage = () => {
 
     // We need direct access to the products to check live stock
     const products = useProductStore(state => state.products);
+    const fetchProducts = useProductStore(state => state.fetchProducts);
     const decrementInventory = useProductStore(state => state.decrementInventory);
+
+    // Fetch fresh inventory for the checkout protection checks
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
 
     // Get vendor profiles to retrieve mapping data for Cashfree
     const vendors = useVendorStore(state => state.vendors);

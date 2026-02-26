@@ -17,6 +17,8 @@ const AddProductPage = () => {
 
     const addProduct = useProductStore(state => state.addProduct);
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [copied, setCopied] = useState(false);
     const [formData, setFormData] = useState({
@@ -45,18 +47,27 @@ const AddProductPage = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        addProduct(currentUser.id, {
-            name: formData.name,
-            price: parseFloat(formData.price),
-            quantity: parseInt(formData.quantity, 10),
-            taxRate: parseFloat(formData.taxRate) || 0,
-            isGstInclusive: formData.isGstInclusive,
-            hsn: formData.hsn,
-            image: formData.image || 'https://via.placeholder.com/400'
-        });
-        setSuccess(true);
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            await addProduct(currentUser.vendorProfileId || currentUser.id, {
+                name: formData.name,
+                price: parseFloat(formData.price),
+                quantity: parseInt(formData.quantity, 10),
+                taxRate: parseFloat(formData.taxRate) || 0,
+                isGstInclusive: formData.isGstInclusive,
+                hsn: formData.hsn,
+                image: formData.image || ''
+            });
+            setSuccess(true);
+        } catch (error) {
+            setSubmitError(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Construct a checkout URL payload that would ideally point to a hosted checkout routing in production
@@ -157,6 +168,11 @@ const AddProductPage = () => {
                             </div>
                         </div>
 
+                        {submitError && (
+                            <div style={{ padding: '1rem', background: 'var(--color-danger)', color: 'white', borderRadius: '4px', marginBottom: '1.5rem' }}>
+                                {submitError}
+                            </div>
+                        )}
                         <div className="input-group">
                             <label className="input-label">Product Name *</label>
                             <input
@@ -243,8 +259,8 @@ const AddProductPage = () => {
                             </div>
                         </div>
 
-                        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
-                            Save Product & Generate Live QR
+                        <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
+                            {isSubmitting ? 'Saving...' : 'Save Product & Generate Live QR'}
                         </button>
                     </form>
                 </div>

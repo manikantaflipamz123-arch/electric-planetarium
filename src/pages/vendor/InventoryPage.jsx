@@ -15,7 +15,17 @@ const InventoryPage = () => {
         }
     }, [currentUser, navigate]);
 
-    const products = useProductStore(state => state.products).filter(p => p.vendorId === currentUser?.id);
+    // Use fetchProducts when component mounts
+    const fetchProducts = useProductStore(state => state.fetchProducts);
+
+    useEffect(() => {
+        if (currentUser && currentUser.role === 'vendor') {
+            // Using ID from the appStore which was hydrated by login
+            fetchProducts(currentUser.vendorProfileId || currentUser.id);
+        }
+    }, [currentUser, fetchProducts]);
+
+    const products = useProductStore(state => state.products).filter(p => true); // Data is already filtered by API based on vendorId
     const updateProduct = useProductStore(state => state.updateProduct);
     const deleteProduct = useProductStore(state => state.deleteProduct);
 
@@ -24,9 +34,13 @@ const InventoryPage = () => {
     const [selectedQrProduct, setSelectedQrProduct] = useState(null);
     const [copiedLink, setCopiedLink] = useState(null);
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this product?')) {
-            deleteProduct(id);
+            try {
+                await deleteProduct(id);
+            } catch (error) {
+                alert(`Error deleting product: ${error.message}`);
+            }
         }
     };
 
@@ -42,16 +56,20 @@ const InventoryPage = () => {
         });
     };
 
-    const handleEditSave = (id) => {
-        updateProduct(id, {
-            name: editForm.name,
-            price: Number(editForm.price),
-            quantity: Number(editForm.quantity),
-            taxRate: Number(editForm.taxRate),
-            isGstInclusive: editForm.isGstInclusive,
-            hsn: editForm.hsn
-        });
-        setEditingId(null);
+    const handleEditSave = async (id) => {
+        try {
+            await updateProduct(id, {
+                name: editForm.name,
+                price: Number(editForm.price),
+                quantity: Number(editForm.quantity),
+                taxRate: Number(editForm.taxRate),
+                isGstInclusive: editForm.isGstInclusive,
+                hsn: editForm.hsn
+            });
+            setEditingId(null);
+        } catch (error) {
+            alert(`Error updating product: ${error.message}`);
+        }
     };
 
     const handleDownloadQR = (product) => {
