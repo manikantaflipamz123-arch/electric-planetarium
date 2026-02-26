@@ -4,7 +4,6 @@ import { useVendorStore } from '../store/vendorStore';
 
 const OnboardingPage = () => {
     const navigate = useNavigate();
-    const submitApplication = useVendorStore(state => state.submitApplication);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
@@ -50,17 +49,6 @@ const OnboardingPage = () => {
                 throw new Error(data.message || 'Registration failed');
             }
 
-            // Also keep the mock store updated for the rest of the app's current logic 
-            // until we fully migrate the Admin dashboard to the DB.
-            submitApplication({
-                storeName: formData.storeName,
-                gstNumber: formData.gstNumber,
-                bankAccount: formData.accountNumber,
-                ifscCode: formData.ifscCode,
-                bankName: formData.bankName,
-                password: formData.password,
-                email: formData.email
-            });
 
             setIsSubmitting(false);
             setSuccess(true);

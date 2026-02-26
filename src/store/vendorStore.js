@@ -1,22 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { generateId } from './appStore';
 
 export const useVendorStore = create(
     persist(
         (set, get) => ({
-            applications: [
-                {
-                    id: 'app_1',
-                    storeName: 'Electro World',
-                    gstNumber: '29GGGGG1314R9Z6',
-                    bankAccount: '1234567890',
-                    ifscCode: 'HDFC0001234',
-                    bankName: 'HDFC Bank',
-                    status: 'pending',
-                    submittedAt: new Date().toISOString()
-                }
-            ],
+            applications: [],
             vendors: [],
             platformCommissionRate: 10, // Default 10% commission
 
@@ -24,42 +12,55 @@ export const useVendorStore = create(
                 set({ platformCommissionRate: newRate });
             },
 
-            submitApplication: (data) => {
-                const newApp = {
-                    id: `app_${generateId()}`,
-                    ...data,
-                    status: 'pending',
-                    submittedAt: new Date().toISOString()
-                };
-                set({ applications: [...get().applications, newApp] });
-            },
-
-            approveApplication: (id) => {
-                const { applications, vendors } = get();
-                const app = applications.find(a => a.id === id);
-
-                if (app) {
-                    const newVendor = {
-                        id: `v_${generateId()}`,
-                        ...app,
-                        approvedAt: new Date().toISOString()
-                    };
-
-                    set({
-                        applications: applications.map(a =>
-                            a.id === id ? { ...a, status: 'approved' } : a
-                        ),
-                        vendors: [...vendors, newVendor]
-                    });
+            fetchAdminApplications: async () => {
+                try {
+                    const res = await fetch('/api/admin/applications');
+                    if (res.ok) {
+                        const data = await res.json();
+                        set({
+                            applications: data.applications,
+                            vendors: data.applications.filter(a => a.status === 'APPROVED')
+                        });
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch admin applications:", error);
                 }
             },
 
-            rejectApplication: (id, reason = '') => {
-                set({
-                    applications: get().applications.map(a =>
-                        a.id === id ? { ...a, status: 'rejected', rejectionReason: reason } : a
-                    )
-                });
+            approveApplication: async (id) => {
+                try {
+                    const res = await fetch('/api/admin/approve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ vendorId: id })
+                    });
+                    if (res.ok) {
+                        await get().fetchAdminApplications();
+                    } else {
+                        const errorData = await res.json();
+                        console.error("Approval failed:", errorData.message);
+                    }
+                } catch (error) {
+                    console.error("Failed to approve application:", error);
+                }
+            },
+
+            rejectApplication: async (id, reason = '') => {
+                try {
+                    const res = await fetch('/api/admin/reject', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ vendorId: id, reason })
+                    });
+                    if (res.ok) {
+                        await get().fetchAdminApplications();
+                    } else {
+                        const errorData = await res.json();
+                        console.error("Rejection failed:", errorData.message);
+                    }
+                } catch (error) {
+                    console.error("Failed to reject application:", error);
+                }
             },
 
             updateVendorSettings: (vendorId, settings) => {

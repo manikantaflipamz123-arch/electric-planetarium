@@ -9,12 +9,15 @@ import { Eye, CheckCircle, XCircle, FileText, BadgeDollarSign, Download } from '
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const currentUser = useAppStore(state => state.currentUser);
+    const fetchAdminApplications = useVendorStore(state => state.fetchAdminApplications);
 
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'admin') {
             navigate('/admin/login');
+        } else {
+            fetchAdminApplications();
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, fetchAdminApplications]);
 
     const applications = useVendorStore(state => state.applications);
     const vendors = useVendorStore(state => state.vendors);
@@ -103,7 +106,7 @@ const AdminDashboard = () => {
                     <div className="card" style={{ padding: '1rem 1.5rem', minWidth: '150px' }}>
                         <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.25rem' }}>Pending</p>
                         <p style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-warning)' }}>
-                            {applications.filter(a => a.status === 'pending').length}
+                            {applications.filter(a => a.status === 'PENDING').length}
                         </p>
                     </div>
                     <div className="card" style={{ padding: '1rem 1.5rem', minWidth: '150px' }}>
@@ -165,9 +168,9 @@ const AdminDashboard = () => {
                                         <td><span style={{ fontFamily: 'monospace' }}>{app.gstNumber}</span></td>
                                         <td>{new Date(app.submittedAt).toLocaleDateString()}</td>
                                         <td>
-                                            {app.status === 'pending' && <span className="badge badge-warning">Pending</span>}
-                                            {app.status === 'approved' && <span className="badge badge-success">Approved</span>}
-                                            {app.status === 'rejected' && <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Rejected</span>}
+                                            {app.status === 'PENDING' && <span className="badge badge-warning">Pending</span>}
+                                            {app.status === 'APPROVED' && <span className="badge badge-success">Approved</span>}
+                                            {app.status === 'REJECTED' && <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Rejected</span>}
                                         </td>
                                         <td>
                                             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -179,7 +182,7 @@ const AdminDashboard = () => {
                                                     <Eye size={18} />
                                                 </button>
 
-                                                {app.status === 'pending' && (
+                                                {app.status === 'PENDING' && (
                                                     <>
                                                         <button
                                                             onClick={(e) => handleApprove(e, app.id)}

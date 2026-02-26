@@ -8,12 +8,15 @@ const SellerDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const currentUser = useAppStore(state => state.currentUser);
+    const fetchAdminApplications = useVendorStore(state => state.fetchAdminApplications);
 
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'admin') {
             navigate('/admin/login');
+        } else {
+            fetchAdminApplications();
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, fetchAdminApplications]);
 
     const applications = useVendorStore(state => state.applications);
     const approveApplication = useVendorStore(state => state.approveApplication);
@@ -66,14 +69,14 @@ const SellerDetailsPage = () => {
                 <div>
                     <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                         {application.storeName}
-                        {application.status === 'pending' && <span className="badge badge-warning">Pending</span>}
-                        {application.status === 'approved' && <span className="badge badge-success">Approved</span>}
-                        {application.status === 'rejected' && <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Rejected</span>}
+                        {application.status === 'PENDING' && <span className="badge badge-warning">Pending</span>}
+                        {application.status === 'APPROVED' && <span className="badge badge-success">Approved</span>}
+                        {application.status === 'REJECTED' && <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Rejected</span>}
                     </h2>
                     <p className="text-muted">Application ID: {application.id}</p>
                 </div>
 
-                {application.status === 'pending' && !isRejecting && (
+                {application.status === 'PENDING' && !isRejecting && (
                     <div style={{ display: 'flex', gap: '1rem' }}>
                         <button onClick={handleRejectClick} className="btn btn-outline" style={{ color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}>
                             <XCircle size={18} /> Reject
@@ -106,7 +109,7 @@ const SellerDetailsPage = () => {
                 </div>
             )}
 
-            {application.status === 'rejected' && application.rejectionReason && (
+            {application.status === 'REJECTED' && application.rejectionReason && (
                 <div className="card" style={{ padding: '2rem', marginBottom: '2rem', borderLeft: '4px solid var(--color-danger)', background: 'var(--color-danger)05' }}>
                     <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: 'var(--color-danger)' }}>Rejection Reason</h3>
                     <p>{application.rejectionReason}</p>
