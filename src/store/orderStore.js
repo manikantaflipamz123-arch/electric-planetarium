@@ -103,11 +103,12 @@ export const useOrderStore = create(
 
             updateOrderStatus: async (orderId, status, trackingData = {}) => {
                 try {
+                    const safeStatus = typeof status === 'string' ? status.toUpperCase() : status;
                     const response = await fetch(`/api/orders?id=${orderId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            status,
+                            status: safeStatus,
                             trackingNumber: trackingData.trackingNumber || undefined,
                             courierPartner: trackingData.courierPartner || undefined
                         })

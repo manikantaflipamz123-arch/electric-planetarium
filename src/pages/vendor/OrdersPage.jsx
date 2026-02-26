@@ -25,7 +25,7 @@ const OrdersPage = () => {
 
     const filteredOrders = filter === 'All'
         ? orders
-        : orders.filter(o => o.status === filter);
+        : orders.filter(o => (o.status || '').toUpperCase() === filter.toUpperCase());
 
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
