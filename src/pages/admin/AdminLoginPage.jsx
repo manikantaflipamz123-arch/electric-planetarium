@@ -10,6 +10,7 @@ const AdminLoginPage = () => {
 
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     // Auto-redirect if already logged in
     useEffect(() => {
@@ -18,16 +19,30 @@ const AdminLoginPage = () => {
         }
     }, [currentUser, navigate]);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
 
-        // Hardcoded admin prototype password
-        if (password === 'admin123') {
-            loginAsAdmin();
-            navigate('/admin');
-        } else {
-            setError("Invalid administrator password.");
+        try {
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                loginAsAdmin();
+                navigate('/admin');
+            } else {
+                setError(data.message || "Invalid administrator password.");
+            }
+        } catch (err) {
+            setError("Network error. Please try again later.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -72,8 +87,10 @@ const AdminLoginPage = () => {
                         Prototype Hint: <code>admin123</code>
                     </p>
 
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.875rem', background: 'var(--color-primary-dark)' }}>
-                        Unlock Dashboard <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.875rem', background: 'var(--color-primary-dark)' }} disabled={isLoading}>
+                        {isLoading ? 'Authenticating...' : (
+                            <>Unlock Dashboard <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} /></>
+                        )}
                     </button>
                 </form>
             </div>
