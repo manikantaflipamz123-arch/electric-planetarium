@@ -66,12 +66,11 @@ export const useOrderStore = create(
 
             clearCart: () => set({ cart: [] }),
 
-            // Order Actions
             placeOrder: async (customerDetails) => {
                 const { cart } = get();
 
                 try {
-                    const response = await fetch('/api/orders', {
+                    const response = await fetch('/api/checkout?action=create', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -83,20 +82,14 @@ export const useOrderStore = create(
                     const data = await response.json();
 
                     if (!response.ok) {
-                        throw new Error(data.message || 'Failed to place order');
+                        throw new Error(data.message || 'Failed to initialize checkout');
                     }
 
-                    // Order was placed successfully to DB
-                    // Because this is usually called by the customer, we clear their cart
-                    set({
-                        cart: []
-                    });
-
-                    // Return the generated orders list for the Checkout Success screen
-                    return data.orders;
+                    // Return the data which includes payment_session_id, cashfree_payload, and pending orders
+                    return data;
 
                 } catch (error) {
-                    console.error('Failed to place order:', error);
+                    console.error('Failed to initialize checkout:', error);
                     throw error;
                 }
             },

@@ -15,16 +15,11 @@ const CheckoutPage = () => {
     // We need direct access to the products to check live stock
     const products = useProductStore(state => state.products);
     const fetchProducts = useProductStore(state => state.fetchProducts);
-    const decrementInventory = useProductStore(state => state.decrementInventory);
 
     // Fetch fresh inventory for the checkout protection checks
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
-
-    // Get vendor profiles to retrieve mapping data for Cashfree
-    const vendors = useVendorStore(state => state.vendors);
-    const platformCommissionRate = useVendorStore(state => state.platformCommissionRate);
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [successData, setSuccessData] = useState(null);
@@ -85,106 +80,10 @@ const CheckoutPage = () => {
 
         // Simulate payment gateway delay
         setTimeout(async () => {
-            // Re-check inventory at point of final commitment to prevent race conditions
-            let hasError = false;
-            for (const cartItem of cart) {
-                // Must get fresh state inside timeout 
-                const freshProducts = useProductStore.getState().products;
-                const liveProduct = freshProducts.find(p => p.id === cartItem.product.id);
-                const liveQty = liveProduct ? Number(liveProduct.quantity) : 0;
-                const cartQty = Number(cartItem.quantity) || 0;
-
-                if (!liveProduct || liveQty < cartQty) {
-                    hasError = true;
-                    setCheckoutError(`Transaction aborted. "${cartItem.product.name}" just sold out!`);
-                    break;
-                }
-            }
-
-            if (hasError) {
-                setIsProcessing(false);
-                return;
-            }
-
-            // Decrement inventory for all items
-            cart.forEach(item => {
-                decrementInventory(item.product.id, item.quantity);
-            });
-
-            // --- CASHFREE EASY SPLIT SIMULATION ---
-            // Group the completed cart contents by vendor
-            const vendorSplits = {};
-            cart.forEach(item => {
-                const liveProduct = products.find(p => p.id === item.product.id) || item.product;
-                const rate = liveProduct.taxRate !== undefined ? liveProduct.taxRate / 100 : 0.18;
-
-                const itemTotalGross = item.product.price * item.quantity;
-
-                // Determine base price and exact tax amount based on inclusive/exclusive setting
-                let buyerPaidTax = 0;
-
-                if (!liveProduct.isGstInclusive) {
-                    // Tax is added ON TOP of the base price
-                    buyerPaidTax = itemTotalGross * rate;
-                }
-
-                // Platform takes its % fee based on gross sales
-                const platformFee = itemTotalGross * (platformCommissionRate / 100);
-                // The platform fee is a service, so it incurs 18% GST that the platform must collect from the seller
-                const platformFeeGst = platformFee * 0.18;
-
-                const totalPlatformDeduction = platformFee + platformFeeGst;
-
-                // What the seller actually gets directly routed to their Nodal Account
-                // If it's exclusive, they get Gross + Tax - Fees
-                // If it's inclusive, they get Gross - Fees (since tax is already inside Gross)
-                const finalVendorPayout = liveProduct.isGstInclusive ?
-                    (itemTotalGross - totalPlatformDeduction) :
-                    ((itemTotalGross + buyerPaidTax) - totalPlatformDeduction);
-
-                if (!vendorSplits[item.product.vendorId]) {
-                    vendorSplits[item.product.vendorId] = 0;
-                }
-                vendorSplits[item.product.vendorId] += finalVendorPayout;
-            });
-
-            // Map standard vendor IDs to the required format (or hypothetical Bank IDs)
-            const splitTags = Object.keys(vendorSplits).map(vendorId => {
-                // In production, you would fetch real vendor bank aliases stored at Cashfree
-                return {
-                    vendor_id: vendorId, // Internal mapping
-                    amount: Number(vendorSplits[vendorId].toFixed(2)),
-                    percentage: null // Sending exact amount instead of flat %
-                };
-            });
-
-            // The final payload to send to https://sandbox.cashfree.com/pg/orders
-            const cashfreePayload = {
-                order_id: `ord_${Date.now()}`,
-                order_amount: finalTotal.toFixed(2),
-                order_currency: "INR",
-                customer_details: {
-                    customer_id: currentUser?.id || "guest_123",
-                    customer_email: formData.email,
-                    customer_phone: "9999999999" // Usually required, hardcoded for mockup
-                },
-                order_meta: {
-                    notify_url: "https://your-api.shoplivedeals.com/webhook/cashfree"
-                },
-                order_splits: splitTags
-            };
-
-            console.group('🏦 [CASHFREE EASY SPLIT] SIMULATED PAYLOAD');
-            console.log("Endpoint: POST https://sandbox.cashfree.com/pg/orders");
-            console.log("Headers: { 'x-client-id': '...', 'x-client-secret': '...', 'x-api-version': '2023-08-01' }");
-            console.log("Body:", JSON.stringify(cashfreePayload, null, 2));
-            console.groupEnd();
-            // --- END CASHFREE SIMULATION ---
-
-            // Create orders
             const fullAddress = `${formData.address}, ${formData.city}`;
             try {
-                const newOrders = await placeOrder({
+                // Initialize Secure Checkout Session
+                const checkoutData = await placeOrder({
                     id: currentUser?.id || 'guest',
                     name: formData.name,
                     email: formData.email,
@@ -193,7 +92,26 @@ const CheckoutPage = () => {
                     zip: formData.zip
                 });
 
-                setSuccessData(newOrders);
+                console.group('🏦 [CASHFREE EASY SPLIT] SECURE BACKEND PAYLOAD generation');
+                console.log("Endpoint: POST https://sandbox.cashfree.com/pg/orders");
+                console.log("Headers: { 'x-client-id': '...', 'x-client-secret': '...', 'x-api-version': '2023-08-01' }");
+                console.log("Body:", JSON.stringify(checkoutData.cashfree_payload, null, 2));
+                console.groupEnd();
+
+                // Fire secure webhook simulation
+                await fetch('/api/checkout?action=webhook', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-webhook-signature': 'SIMULATION_BYPASS'
+                    },
+                    body: JSON.stringify({
+                        data: { order: { order_id: checkoutData.payment_session_id } }
+                    })
+                });
+
+                useOrderStore.setState({ cart: [] });
+                setSuccessData(checkoutData.orders);
             } catch (err) {
                 setCheckoutError(err.message || 'Failed to process transaction. Please try again.');
             } finally {
