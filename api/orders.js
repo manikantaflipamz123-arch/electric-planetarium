@@ -30,7 +30,7 @@ export default async function handler(req, res) {
                 const vendorItems = groupedByVendor[vendorId];
                 const totalAmount = vendorItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
-                const orderId = `ord_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+                const orderId = Math.floor(100000000 + Math.random() * 900000000).toString();
 
                 // Generate Order
                 await query(`

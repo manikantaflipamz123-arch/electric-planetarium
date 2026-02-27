@@ -82,7 +82,7 @@ export default async function handler(req, res) {
             // 2. Create PENDING Database Orders
             for (const vendorId of Object.keys(groupedByVendor)) {
                 const vData = groupedByVendor[vendorId];
-                const orderId = `ord_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+                const orderId = Math.floor(100000000 + Math.random() * 900000000).toString();
 
                 await query(`
                     INSERT INTO "Order" (id, "vendorId", "customerId", "customerName", "customerEmail", address, phone, zip, "totalAmount", status, "trackingNumber", "createdAt", "updatedAt")
