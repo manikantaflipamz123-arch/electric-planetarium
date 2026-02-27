@@ -33,6 +33,7 @@ import { useAppStore } from './store/appStore';
 
 function App() {
     const loginAsVendor = useAppStore(state => state.loginAsVendor);
+    const loginAsAdmin = useAppStore(state => state.loginAsAdmin);
     const logout = useAppStore(state => state.logout);
     const [isVerifying, setIsVerifying] = useState(true);
 
@@ -51,6 +52,8 @@ function App() {
                             platformCommissionRate: data.vendorProfile?.platformCommissionRate || 15.0,
                             vendorProfileId: data.vendorProfile?.id
                         });
+                    } else if (data.user.role === 'ADMIN') {
+                        loginAsAdmin();
                     }
                 } else {
                     // Cookie is invalid or missing, ensure local state is cleared
