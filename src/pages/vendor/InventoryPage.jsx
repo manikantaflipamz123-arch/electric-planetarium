@@ -94,7 +94,7 @@ const InventoryPage = () => {
     };
 
     const handleCopyLink = (product) => {
-        const baseUrl = window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.in';
+        const baseUrl = window.location.hostname === 'localhost' ? window.location.origin : 'https://electric-planetarium.vercel.app';
         const link = `${baseUrl}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`;
         navigator.clipboard.writeText(link);
         setCopiedLink(product.id);
@@ -231,7 +231,7 @@ const InventoryPage = () => {
                                                 >
                                                     <QRCodeSVG
                                                         id={`qr-small-${product.id}`}
-                                                        value={`${window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.in'}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
+                                                        value={`${window.location.hostname === 'localhost' ? window.location.origin : 'https://electric-planetarium.vercel.app'}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
                                                         size={40}
                                                         level="L"
                                                     />
@@ -244,7 +244,7 @@ const InventoryPage = () => {
                                                 <div style={{ display: 'none' }}>
                                                     <QRCodeSVG
                                                         id={`qr-large-${product.id}`}
-                                                        value={`${window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.in'}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
+                                                        value={`${window.location.hostname === 'localhost' ? window.location.origin : 'https://electric-planetarium.vercel.app'}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
                                                         size={300}
                                                         level="L"
                                                     />
