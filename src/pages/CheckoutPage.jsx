@@ -5,6 +5,7 @@ import { useProductStore } from '../store/productStore';
 import { useVendorStore } from '../store/vendorStore';
 import { useAppStore } from '../store/appStore';
 import { CreditCard, CheckCircle, Lock, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { load } from '@cashfreepayments/cashfree-js';
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
@@ -24,6 +25,18 @@ const CheckoutPage = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [successData, setSuccessData] = useState(null);
     const [checkoutError, setCheckoutError] = useState(null);
+
+    // Initialize Cashfree
+    const [cashfree, setCashfree] = useState(null);
+    useEffect(() => {
+        const initSDK = async () => {
+            const cf = await load({
+                mode: "sandbox" // Change to "production" when going live
+            });
+            setCashfree(cf);
+        };
+        initSDK();
+    }, []);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -78,46 +91,66 @@ const CheckoutPage = () => {
             }
         }
 
-        // Simulate payment gateway delay
-        setTimeout(async () => {
-            const fullAddress = `${formData.address}, ${formData.city}`;
-            try {
-                // Initialize Secure Checkout Session
-                const checkoutData = await placeOrder({
-                    id: currentUser?.id || 'guest',
-                    name: formData.name,
-                    email: formData.email,
-                    address: fullAddress,
-                    phone: formData.phone,
-                    zip: formData.zip
-                });
+        try {
+            // Initialize Secure Checkout Session
+            const checkoutData = await placeOrder({
+                id: currentUser?.id || 'guest',
+                name: formData.name,
+                email: formData.email,
+                address: fullAddress,
+                phone: formData.phone,
+                zip: formData.zip
+            });
 
-                console.group('🏦 [CASHFREE EASY SPLIT] SECURE BACKEND PAYLOAD generation');
-                console.log("Endpoint: POST https://sandbox.cashfree.com/pg/orders");
-                console.log("Headers: { 'x-client-id': '...', 'x-client-secret': '...', 'x-api-version': '2023-08-01' }");
-                console.log("Body:", JSON.stringify(checkoutData.cashfree_payload, null, 2));
-                console.groupEnd();
-
-                // Fire secure webhook simulation
-                await fetch('/api/checkout?action=webhook', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'x-webhook-signature': 'SIMULATION_BYPASS'
-                    },
-                    body: JSON.stringify({
-                        data: { order: { order_id: checkoutData.payment_session_id } }
-                    })
-                });
-
-                useOrderStore.setState({ cart: [] });
-                setSuccessData(checkoutData.orders);
-            } catch (err) {
-                setCheckoutError(err.message || 'Failed to process transaction. Please try again.');
-            } finally {
+            if (!cashfree) {
+                setCheckoutError("Payment SDK is still loading. Please try again in a moment.");
                 setIsProcessing(false);
+                return;
             }
-        }, 2000);
+
+            // Trigger Cashfree Modal Overlay
+            let checkoutOptions = {
+                paymentSessionId: checkoutData.payment_session_id,
+                redirectTarget: "_modal"
+            };
+
+            cashfree.checkout(checkoutOptions).then(async (result) => {
+                if (result.error) {
+                    console.error("Cashfree Payment Error or User Closed Popup:", result.error);
+                    setCheckoutError(result.error.message || "Payment cancelled or failed.");
+                    setIsProcessing(false);
+                }
+
+                if (result.paymentDetails) {
+                    console.log("Payment Confirmed in UI:", result.paymentDetails.paymentMessage);
+                    // For local development, we manually simulate the webhook trigger since our localhost is not public
+                    // In production, cashfree servers hit the /api/webhook directly. We do this to immediately sync the UI state.
+                    try {
+                        await fetch('/api/checkout?action=webhook', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-webhook-signature': 'SIMULATION_BYPASS'
+                            },
+                            body: JSON.stringify({
+                                data: { order: { order_id: checkoutData.order_id } }
+                            })
+                        });
+
+                        useOrderStore.setState({ cart: [] });
+                        setSuccessData(checkoutData.orders);
+                    } catch (err) {
+                        setCheckoutError("Payment succeeded but order confirmation failed. Please check status.");
+                    } finally {
+                        setIsProcessing(false);
+                    }
+                }
+            });
+
+        } catch (err) {
+            setCheckoutError(err.message || 'Failed to process transaction. Please try again.');
+            setIsProcessing(false);
+        }
     };
 
     if (successData) {
