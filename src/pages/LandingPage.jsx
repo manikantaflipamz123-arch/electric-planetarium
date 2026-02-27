@@ -70,6 +70,11 @@ const LandingPage = () => {
                         </button>
                     </div>
 
+                    <div style={{ marginTop: '1.5rem', fontSize: '1rem' }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Already registered? </span>
+                        <Link to="/status" style={{ color: 'var(--color-primary-dark)', fontWeight: 600, textDecoration: 'underline' }}>Check your application status here.</Link>
+                    </div>
+
                     <div style={{ marginTop: '2.5rem', display: 'flex', gap: '2rem', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', flexWrap: 'wrap' }}>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CheckCircle size={16} color="var(--color-success)" /> Zero Setup Fees</span>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CheckCircle size={16} color="var(--color-success)" /> Automated Waybills</span>
@@ -150,6 +155,11 @@ const LandingPage = () => {
                         <Link to="/onboarding" className="btn" style={{ padding: '1rem 3rem', fontSize: '1.125rem', borderRadius: 'var(--radius-full)', background: 'white', color: 'var(--color-primary-dark)', fontWeight: 700 }}>
                             Apply as a Seller
                         </Link>
+                    </div>
+                    
+                    <div style={{ marginTop: '1.5rem', fontSize: '1rem' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.8)' }}>Already registered? </span>
+                        <Link to="/status" style={{ color: 'white', fontWeight: 600, textDecoration: 'underline' }}>Check your application status here.</Link>
                     </div>
                 </div>
             </section>
