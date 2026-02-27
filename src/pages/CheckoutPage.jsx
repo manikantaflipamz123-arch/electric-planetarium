@@ -92,6 +92,7 @@ const CheckoutPage = () => {
         }
 
         try {
+            const fullAddress = `${formData.address}, ${formData.city}`;
             // Initialize Secure Checkout Session
             const checkoutData = await placeOrder({
                 id: currentUser?.id || 'guest',
