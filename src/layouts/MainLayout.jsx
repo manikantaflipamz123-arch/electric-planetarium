@@ -25,9 +25,9 @@ const MainLayout = () => {
                     <nav className="flex items-center gap-6 main-nav-container">
                         <Link to="/status" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap' }}>Check Status</Link>
                         <Link to="/onboarding" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap' }}>Start Selling</Link>
-                        <Link to="/login" className="text-muted desktop-only" style={{ textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap' }}>Vendor Login</Link>
-                        <Link to="/admin/login" className="text-muted desktop-only" style={{ textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap' }}>Admin Login</Link>
-                        <div className="desktop-only" style={{ width: '1px', height: '24px', background: 'var(--border-color)' }}></div>
+                        <Link to="/login" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap' }}>Vendor Login</Link>
+                        <Link to="/admin/login" className="text-muted" style={{ textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap' }}>Admin Login</Link>
+                        <div style={{ width: '1px', height: '24px', background: 'var(--border-color)' }}></div>
                         <Link to="/cart" className="btn btn-ghost" style={{ position: 'relative' }}>
                             <ShoppingCart size={20} />
                             {cartItemCount > 0 && (
