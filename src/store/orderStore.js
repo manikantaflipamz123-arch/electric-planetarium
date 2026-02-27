@@ -27,6 +27,23 @@ export const useOrderStore = create(
                 }
             },
 
+            // Admin only: Fetch all platform orders
+            fetchAllAdminOrders: async () => {
+                set({ isLoading: true, error: null });
+                try {
+                    const response = await fetch('/api/admin?action=orders');
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        set({ orders: data.orders || [], isLoading: false });
+                    } else {
+                        set({ error: data.message || 'Failed to fetch platform orders', isLoading: false });
+                    }
+                } catch (error) {
+                    set({ error: error.message, isLoading: false });
+                }
+            },
+
             // Cart Actions
             addToCart: (product, addedQuantity = 1) => {
                 const { cart } = get();

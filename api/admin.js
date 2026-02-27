@@ -44,6 +44,30 @@ export default async function handler(req, res) {
             return res.status(200).json({ applications: result.rows });
         }
 
+        if (action === 'orders' && req.method === 'GET') {
+            const result = await query(`
+                SELECT 
+                    o.*,
+                    COALESCE(
+                        json_agg(
+                            json_build_object(
+                                'productId', oi."productId",
+                                'productName', p.name,
+                                'priceAtSale', oi."priceAtSale",
+                                'quantity', oi.quantity,
+                                'total', oi.total
+                            )
+                        ) FILTER (WHERE oi.id IS NOT NULL), '[]'
+                    ) as items
+                FROM "Order" o
+                LEFT JOIN "OrderItem" oi ON o.id = oi."orderId"
+                LEFT JOIN "Product" p ON oi."productId" = p.id
+                GROUP BY o.id
+                ORDER BY o."createdAt" DESC
+            `);
+            return res.status(200).json({ orders: result.rows });
+        }
+
         if (action === 'approve' && req.method === 'POST') {
             const { vendorId } = req.body;
             if (!vendorId) return res.status(400).json({ message: 'vendorId is required' });

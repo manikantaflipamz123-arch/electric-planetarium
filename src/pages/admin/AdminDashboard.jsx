@@ -10,14 +10,19 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
     const currentUser = useAppStore(state => state.currentUser);
     const fetchAdminApplications = useVendorStore(state => state.fetchAdminApplications);
+    const fetchAllAdminOrders = useOrderStore(state => state.fetchAllAdminOrders);
+    const fetchProducts = useProductStore(state => state.fetchProducts);
 
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'admin') {
             navigate('/admin/login');
         } else {
             fetchAdminApplications();
+            // Fetch live database orders and products to compute true platform volume
+            fetchAllAdminOrders();
+            fetchProducts();
         }
-    }, [currentUser, navigate, fetchAdminApplications]);
+    }, [currentUser, navigate, fetchAdminApplications, fetchAllAdminOrders, fetchProducts]);
 
     const applications = useVendorStore(state => state.applications);
     const vendors = useVendorStore(state => state.vendors);
