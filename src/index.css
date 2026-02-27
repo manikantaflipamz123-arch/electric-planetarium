@@ -267,3 +267,139 @@ h6 {
   background: var(--color-primary-light);
   color: var(--color-primary-dark);
 }
+
+/* Mobile Responsiveness utilities */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  
+  .dashboard-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    z-index: 100;
+  }
+
+  .sidebar-nav-container {
+    flex-direction: row !important;
+    overflow-x: auto;
+    padding: 0.5rem !important;
+    gap: 0.5rem !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .sidebar-nav-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-link {
+    flex-direction: column !important;
+    padding: 0.5rem !important;
+    gap: 0.25rem !important;
+    font-size: 0.7rem !important;
+    justify-content: center;
+    flex: 1 0 auto;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .dashboard-main {
+    padding-bottom: 70px; /* Space for bottom nav */
+  }
+
+  .dashboard-header {
+    height: auto;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    display: block;
+  }
+  
+  /* Main Layout Nav */
+  .main-nav-container {
+    overflow-x: auto;
+    width: 100%;
+    justify-content: flex-start !important;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .main-header-content {
+    flex-direction: column;
+    align-items: flex-start !important;
+    height: auto !important;
+    padding: 1rem 0;
+  }
+
+  /* Utilities for stacking */
+  .md-stack {
+    flex-direction: column !important;
+  }
+  
+  .md-grid-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make padding tighter on mobile */
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* Mobile Responsiveness utilities */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  
+  .dashboard-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  
+  /* Utilities for stacking */
+  .md-stack {
+    flex-direction: column !important;
+  }
+  
+  .md-grid-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make padding tighter on mobile */
+  .container {
+    padding: 0 1rem;
+  }
+}

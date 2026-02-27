@@ -123,7 +123,7 @@ const CartPage = () => {
                         </p>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
+                    <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
 
                         {/* Cart Items */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

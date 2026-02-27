@@ -123,7 +123,7 @@ const SellerDetailsPage = () => {
                         <Store size={20} className="text-muted" /> Business Details
                     </h3>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                    <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                         <div>
                             <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.25rem' }}>Store Name</p>
                             <p style={{ fontWeight: 500, fontSize: '1.125rem' }}>{application.storeName}</p>
@@ -153,7 +153,7 @@ const SellerDetailsPage = () => {
                         <Building2 size={20} className="text-muted" /> Bank Information
                     </h3>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                    <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                         <div style={{ gridColumn: '1 / -1' }}>
                             <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.25rem' }}>Bank Name</p>
                             <p style={{ fontWeight: 500, fontSize: '1.125rem' }}>{application.bankName}</p>

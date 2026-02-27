@@ -197,7 +197,7 @@ const CheckoutPage = () => {
                 </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '2rem' }}>
+            <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '2rem' }}>
 
                 {/* Checkout Form */}
                 <div className="card" style={{ padding: '2rem' }}>
@@ -207,7 +207,7 @@ const CheckoutPage = () => {
                             Shipping Information
                         </h3>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <div className="input-group" style={{ gridColumn: '1 / -1' }}>
                                 <label className="input-label">Full Name *</label>
                                 <input type="text" name="name" required className="input-field" value={formData.name} onChange={handleChange} />
@@ -243,7 +243,7 @@ const CheckoutPage = () => {
                             <CreditCard size={20} className="text-muted" /> Payment Details
                         </h3>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <div className="input-group" style={{ gridColumn: '1 / -1' }}>
                                 <label className="input-label">Card Number *</label>
                                 <div style={{ position: 'relative' }}>

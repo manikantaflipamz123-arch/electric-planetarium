@@ -72,7 +72,7 @@ const SettingsPage = () => {
                         </h3>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div className="input-group" style={{ gridColumn: '1 / -1' }}>
                             <label className="input-label">Public Store Name</label>
                             <input type="text" name="storeName" className="input-field" value={profileData.storeName} onChange={handleChange} required />
@@ -94,7 +94,7 @@ const SettingsPage = () => {
                     </h3>
                     <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '1.5rem', marginTop: '-1rem' }}>This address will be printed on all generated PDF shipping labels for undelivered returns.</p>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div className="input-group" style={{ gridColumn: '1 / -1' }}>
                             <label className="input-label">Street Address</label>
                             <input type="text" name="address" className="input-field" value={profileData.address} onChange={handleChange} placeholder="Building, Street Name, Area" required />

@@ -163,7 +163,7 @@ const AddProductPage = () => {
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Add New Product</h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
+            <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
                 <div className="card" style={{ padding: '2rem' }}>
                     <form id="product-form" onSubmit={handleSubmit}>
                         <div className="input-group">
@@ -215,7 +215,7 @@ const AddProductPage = () => {
                             />
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <div className="input-group">
                                 <label className="input-label">Price (₹) *</label>
                                 <input
@@ -246,7 +246,7 @@ const AddProductPage = () => {
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'end' }}>
+                        <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'end' }}>
                             <div className="input-group">
                                 <label className="input-label">Tax Rate (%) *</label>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

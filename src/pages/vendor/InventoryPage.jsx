@@ -120,6 +120,7 @@ const InventoryPage = () => {
                         <p>You have not added any products yet.</p>
                     </div>
                 ) : (
+                    <div className="table-responsive">
                     <table className="data-table">
                         <thead>
                             <tr>
@@ -305,6 +306,7 @@ const InventoryPage = () => {
                             })}
                         </tbody>
                     </table>
+                    </div>
                 )}
             </div>
 

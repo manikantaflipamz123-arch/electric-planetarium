@@ -180,7 +180,7 @@ const AnalyticsPage = () => {
             </div>
 
             {/* Quick Stats Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
                 <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                     <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--color-primary-light)', color: 'var(--color-primary-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
                         <Activity size={24} />
@@ -213,7 +213,7 @@ const AnalyticsPage = () => {
                     <h3 style={{ fontSize: '1.25rem' }}>{timeframe} Tax & Ledger Breakdown</h3>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) auto', gap: '1rem', rowGap: '1rem', alignItems: 'center', letterSpacing: '0.01em' }}>
+                <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) auto', gap: '1rem', rowGap: '1rem', alignItems: 'center', letterSpacing: '0.01em' }}>
 
                     <span className="text-muted">Gross Sales (Paid by Buyers)</span>
                     <span style={{ fontWeight: 600 }}>₹{grossRevenue.toFixed(2)}</span>

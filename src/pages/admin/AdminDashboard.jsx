@@ -142,6 +142,7 @@ const AdminDashboard = () => {
                             <p>No applications found.</p>
                         </div>
                     ) : (
+                        <div className="table-responsive">
                         <table className="data-table">
                             <thead>
                                 <tr>
@@ -206,6 +207,7 @@ const AdminDashboard = () => {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     )}
                 </div>
             )}
@@ -267,6 +269,7 @@ const AdminDashboard = () => {
                                 <p>No approved sellers yet.</p>
                             </div>
                         ) : (
+                            <div className="table-responsive">
                             <table className="data-table">
                                 <thead>
                                     <tr>
@@ -359,6 +362,7 @@ const AdminDashboard = () => {
                                     })}
                                 </tbody>
                             </table>
+                            </div>
                         )}
                     </div>
                 </div>

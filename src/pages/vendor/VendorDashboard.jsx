@@ -104,6 +104,7 @@ const VendorDashboard = () => {
                         No orders yet.
                     </div>
                 ) : (
+                    <div className="table-responsive">
                     <table className="data-table">
                         <thead>
                             <tr>
@@ -132,6 +133,7 @@ const VendorDashboard = () => {
                             ))}
                         </tbody>
                     </table>
+                    </div>
                 )}
             </div>
         </div>

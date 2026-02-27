@@ -48,14 +48,14 @@ const DashboardLayout = () => {
         <div className="dashboard-layout">
             {/* Sidebar */}
             <aside className="dashboard-sidebar">
-                <div style={{ height: '64px', display: 'flex', alignItems: 'center', padding: '0 1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+                <div className="desktop-only" style={{ height: '64px', display: 'flex', alignItems: 'center', padding: '0 1.5rem', borderBottom: '1px solid var(--border-color)' }}>
                     <Link to="/" style={{ textDecoration: 'none', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <img src={logo} alt="ShopLiveDeals" style={{ height: '32px', width: 'auto', borderRadius: '4px' }} />
                         <span style={{ fontSize: '1rem', fontWeight: 600 }}>ShopLiveDeals {isAdmin ? 'Admin' : 'Vendor'}</span>
                     </Link>
                 </div>
 
-                <nav style={{ padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+                <nav className="sidebar-nav-container" style={{ padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
                     {links.map((link) => {
                         const Icon = link.icon;
                         const isActive = location.pathname === link.path;
@@ -63,6 +63,7 @@ const DashboardLayout = () => {
                             <Link
                                 key={link.path}
                                 to={link.path}
+                                className="sidebar-link"
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -78,13 +79,13 @@ const DashboardLayout = () => {
                                 }}
                             >
                                 <Icon size={18} />
-                                {link.name}
+                                <span>{link.name}</span>
                             </Link>
                         )
                     })}
                 </nav>
 
-                <div style={{ padding: '1.5rem 1rem', borderTop: '1px solid var(--border-color)' }}>
+                <div className="desktop-only" style={{ padding: '1.5rem 1rem', borderTop: '1px solid var(--border-color)' }}>
                     <button onClick={handleLogout} style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -109,20 +110,22 @@ const DashboardLayout = () => {
             {/* Main Content Area */}
             <main className="dashboard-main">
                 <header className="dashboard-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                         {/* Replace with contextual title later if needed */}
                         <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>
                             {links.find(l => l.path === location.pathname)?.name || 'Dashboard'}
                         </h2>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        {!isAdmin && (
-                            <Link to="/" className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}>
-                                <Store size={14} /> View Storefront
-                            </Link>
-                        )}
-                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)', fontWeight: 'bold' }}>
-                            {isAdmin ? 'AD' : 'VN'}
+                        
+                        {/* Mobile specific elements */}
+                        <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            {!isAdmin && (
+                                <Link to="/" className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}>
+                                    <Store size={14} /> View Storefront
+                                </Link>
+                            )}
+                            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)', fontWeight: 'bold', cursor: 'pointer' }} onClick={handleLogout} title="Logout">
+                                <LogOut size={16} />
+                            </div>
                         </div>
                     </div>
                 </header>

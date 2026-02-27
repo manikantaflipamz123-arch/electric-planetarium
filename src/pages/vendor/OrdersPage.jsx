@@ -64,6 +64,7 @@ const OrdersPage = () => {
                         <p>No orders found for the selected filter.</p>
                     </div>
                 ) : (
+                    <div className="table-responsive">
                     <table className="data-table">
                         <thead>
                             <tr>
@@ -141,6 +142,7 @@ const OrdersPage = () => {
                             ))}
                         </tbody>
                     </table>
+                    </div>
                 )}
             </div>
         </div>
