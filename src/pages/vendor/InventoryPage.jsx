@@ -94,8 +94,7 @@ const InventoryPage = () => {
     };
 
     const handleCopyLink = (product) => {
-        const baseUrl = window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.com';
-        const link = `${baseUrl}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`;
+        const link = `${window.location.origin}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`;
         navigator.clipboard.writeText(link);
         setCopiedLink(product.id);
         setTimeout(() => setCopiedLink(null), 2000);
@@ -231,7 +230,7 @@ const InventoryPage = () => {
                                                 >
                                                     <QRCodeSVG
                                                         id={`qr-small-${product.id}`}
-                                                        value={`${window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.com'}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
+                                                        value={`${window.location.origin}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
                                                         size={40}
                                                         level="L"
                                                     />
@@ -244,7 +243,7 @@ const InventoryPage = () => {
                                                 <div style={{ display: 'none' }}>
                                                     <QRCodeSVG
                                                         id={`qr-large-${product.id}`}
-                                                        value={`${window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.com'}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
+                                                        value={`${window.location.origin}/cart?quickadd=${btoa(JSON.stringify({ n: product.name }))}`}
                                                         size={300}
                                                         level="L"
                                                     />

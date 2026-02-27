@@ -102,8 +102,7 @@ const AddProductPage = () => {
     // Construct a checkout URL payload that would ideally point to a hosted checkout routing in production
     // We'll simulate its format with base64 encoding to demonstrate an EDITABLE target logic in reality.
     const previewData = btoa(JSON.stringify({ n: formData.name, p: formData.price }));
-    const baseUrl = window.location.hostname === 'localhost' ? window.location.origin : 'https://shoplivedeals.com';
-    const qrTarget = `${baseUrl}/cart?quickadd=${previewData}`;
+    const qrTarget = `${window.location.origin}/cart?quickadd=${previewData}`;
 
     const downloadQR = () => {
         const svg = document.getElementById('product-qr');
