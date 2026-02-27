@@ -44,10 +44,7 @@ const CheckoutPage = () => {
         phone: '',
         address: '',
         city: '',
-        zip: '',
-        cardNumber: '',
-        expiry: '',
-        cvc: ''
+        zip: ''
     });
 
     const cartTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
@@ -272,31 +269,6 @@ const CheckoutPage = () => {
                                 <input type="text" name="zip" required className="input-field" value={formData.zip} onChange={handleChange} />
                             </div>
                         </div>
-
-                        <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', marginTop: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <CreditCard size={20} className="text-muted" /> Payment Details
-                        </h3>
-
-                        <div className="md-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <div className="input-group" style={{ gridColumn: '1 / -1' }}>
-                                <label className="input-label">Card Number *</label>
-                                <div style={{ position: 'relative' }}>
-                                    <input type="text" name="cardNumber" required className="input-field" placeholder="0000 0000 0000 0000" maxLength="19" value={formData.cardNumber} onChange={handleChange} style={{ paddingLeft: '2.5rem' }} />
-                                    <CreditCard size={18} className="text-muted" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
-                                </div>
-                            </div>
-
-                            <div className="input-group">
-                                <label className="input-label">Expiry (MM/YY) *</label>
-                                <input type="text" name="expiry" required className="input-field" placeholder="12/25" maxLength="5" value={formData.expiry} onChange={handleChange} />
-                            </div>
-
-                            <div className="input-group">
-                                <label className="input-label">CVC *</label>
-                                <input type="text" name="cvc" required className="input-field" placeholder="123" maxLength="4" value={formData.cvc} onChange={handleChange} />
-                            </div>
-                        </div>
-
                     </form>
                 </div>
 
@@ -370,8 +342,8 @@ const CheckoutPage = () => {
                     </div>
                 </div>
 
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
