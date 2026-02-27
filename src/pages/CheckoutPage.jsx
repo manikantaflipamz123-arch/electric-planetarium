@@ -73,7 +73,7 @@ const CheckoutPage = () => {
         setCheckoutError(null);
     };
 
-    const handleCheckout = (e) => {
+    const handleCheckout = async (e) => {
         e.preventDefault();
         setIsProcessing(true);
         setCheckoutError(null);
