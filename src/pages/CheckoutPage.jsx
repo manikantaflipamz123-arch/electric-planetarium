@@ -31,7 +31,8 @@ const CheckoutPage = () => {
     useEffect(() => {
         const initSDK = async () => {
             const cf = await load({
-                mode: "sandbox" // Change to "production" when going live
+                mode: "sandbox", // Change to "production" when going live
+                version: "2023-08-01" // Explicitly define API version to match backend
             });
             setCashfree(cf);
         };
@@ -106,9 +107,17 @@ const CheckoutPage = () => {
                 return;
             }
 
+            // Deeply clean the session ID before passing to SDK to prevent sandbox corruption
+            let rawSessionId = checkoutData.payment_session_id || checkoutData.paymentSessionId || "";
+            if (rawSessionId.endsWith('paymentpayment')) {
+                console.warn("Cashfree Sandbox BUG: Stripping 'paymentpayment' string corruption on frontend");
+                rawSessionId = rawSessionId.replace(/paymentpayment$/, '');
+            }
+            rawSessionId = rawSessionId.trim();
+
             // Trigger Cashfree Modal Overlay
             let checkoutOptions = {
-                paymentSessionId: checkoutData.payment_session_id,
+                paymentSessionId: rawSessionId,
                 redirectTarget: "_modal"
             };
 
