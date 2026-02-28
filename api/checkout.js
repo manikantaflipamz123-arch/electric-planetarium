@@ -12,6 +12,17 @@ export default async function handler(req, res) {
         // Ignore if already exists or fails
     }
 
+    // Lazy cleanup on any checkout interaction
+    await cleanupExpiredOrders();
+
+    if (method === 'GET' && action === 'debug') {
+        const appId = process.env.CASHFREE_APP_ID || '';
+        return res.status(200).json({
+            appIdPrefix: appId.substring(0, 10),
+            isSandboxPrefix: appId.startsWith('TEST')
+        });
+    }
+
     if (method === 'POST' && action === 'create') {
         const { customerDetails, cartItems } = req.body;
         if (!customerDetails || !cartItems || cartItems.length === 0) {
