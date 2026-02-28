@@ -12,8 +12,6 @@ export default async function handler(req, res) {
         // Ignore if already exists or fails
     }
 
-    // Lazy cleanup on any checkout interaction
-    await cleanupExpiredOrders();
 
     if (method === 'GET' && action === 'debug') {
         const appId = process.env.CASHFREE_APP_ID || '';
