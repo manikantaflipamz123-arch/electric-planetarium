@@ -158,9 +158,8 @@ export default async function handler(req, res) {
                     customer_phone: customerDetails.phone || "9999999999"
                 },
                 order_meta: {
-                    // Requires ngrok/vercel public domain for real testing. Since we're doing sandbox local dev, 
-                    // this won't be reachable. We will rely on frontend callback for local mock.
-                    notify_url: "https://your-api.shoplivedeals.com/api/checkout?action=webhook"
+                    notify_url: "https://shoplivedeals.in/api/checkout?action=webhook",
+                    return_url: "https://shoplivedeals.in/checkout?order_id={order_id}"
                 }
                 // NOTE: We are intentionally omitting `order_splits` from the Cashfree payload here 
                 // because EasySplit requires vendors to be fully KYC'd and registered on Cashfree's 
@@ -170,7 +169,7 @@ export default async function handler(req, res) {
             const cashfreeAppId = process.env.CASHFREE_APP_ID || '';
             const cashfreeSecretKey = process.env.CASHFREE_SECRET_KEY || '';
 
-            const cfResponse = await fetch('https://sandbox.cashfree.com/pg/orders', {
+            const cfResponse = await fetch('https://api.cashfree.com/pg/orders', {
                 method: 'POST',
                 headers: {
                     'x-client-id': cashfreeAppId,
