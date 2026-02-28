@@ -167,7 +167,7 @@ export default async function handler(req, res) {
             const cashfreeAppId = process.env.CASHFREE_APP_ID || '';
             const cashfreeSecretKey = process.env.CASHFREE_SECRET_KEY || '';
 
-            const cfResponse = await fetch('https://api.cashfree.com/pg/orders', {
+            const cfResponse = await fetch('https://sandbox.cashfree.com/pg/orders', {
                 method: 'POST',
                 headers: {
                     'x-client-id': cashfreeAppId,

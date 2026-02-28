@@ -31,8 +31,8 @@ const CheckoutPage = () => {
     useEffect(() => {
         const initSDK = async () => {
             const cf = await load({
-                mode: "production", // Explicitly use production keys to bypass Sandbox auth errors
-                version: "2023-08-01" // Explicitly define API version to match backend
+                mode: "sandbox",
+                version: "2023-08-01"
             });
             setCashfree(cf);
         };
