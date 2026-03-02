@@ -1,4 +1,4 @@
-import { query } from './_utils/db.js';
+import { query, cleanupExpiredOrders } from './_utils/db.js';
 import crypto from 'crypto';
 
 export default async function handler(req, res) {
@@ -10,6 +10,13 @@ export default async function handler(req, res) {
         await query(`ALTER TYPE "OrderStatus" ADD VALUE IF NOT EXISTS 'PENDING_PAYMENT'`);
     } catch (e) {
         // Ignore if already exists or fails
+    }
+
+    // Lazy cleanup on any checkout interaction. We don't block the actual request if it fails.
+    try {
+        await cleanupExpiredOrders();
+    } catch (e) {
+        console.error("Non-fatal background cleanup error:", e);
     }
 
 
