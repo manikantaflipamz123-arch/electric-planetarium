@@ -31,8 +31,7 @@ const CheckoutPage = () => {
     useEffect(() => {
         const initSDK = async () => {
             const cf = await load({
-                mode: "sandbox",
-                version: "2023-08-01"
+                mode: "sandbox"
             });
             setCashfree(cf);
         };
