@@ -21,6 +21,42 @@ export default async function handler(req, res) {
         });
     }
 
+    if (method === 'GET' && action === 'test-cashfree') {
+        const cashfreePayload = {
+            order_id: `cf_test_${Date.now()}`,
+            order_amount: 1.00,
+            order_currency: "INR",
+            customer_details: {
+                customer_id: "guest_123",
+                customer_phone: "9999999999"
+            },
+            order_meta: {
+                return_url: "https://shoplivedeals.in/checkout?order_id={order_id}"
+            }
+        };
+
+        try {
+            const cfResponse = await fetch('https://sandbox.cashfree.com/pg/orders', {
+                method: 'POST',
+                headers: {
+                    'x-client-id': process.env.CASHFREE_APP_ID || '',
+                    'x-client-secret': process.env.CASHFREE_SECRET_KEY || '',
+                    'x-api-version': '2023-08-01',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cashfreePayload)
+            });
+            const cfData = await cfResponse.json();
+            return res.status(200).json({
+                httpStatus: cfResponse.status,
+                appIdUsed: (process.env.CASHFREE_APP_ID || '').substring(0, 10) + '...',
+                response: cfData
+            });
+        } catch (e) {
+            return res.status(500).json({ error: e.message });
+        }
+    }
+
     if (method === 'POST' && action === 'create') {
         const { customerDetails, cartItems } = req.body;
         if (!customerDetails || !cartItems || cartItems.length === 0) {
